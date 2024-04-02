@@ -10,8 +10,13 @@ struct Args {
     #[arg(short)]
     run_time: f64,
     #[arg(long)]
+    /// Select the film format,
+        /// use --format followed by the number associated with film format
+    /// 1 - 8mm, 2 - Super 8, 3 - 16mm,
+    /// 4 - 35mm 2 perf, 5 - 35mm 3 perf
+    /// 6 - 35mm 4 perf, 7 - 65mm
     format: i32,
-    // #[arg(short, long)]
+     // #[arg(short, long)]
     //film_type: String,
 }
 
@@ -27,7 +32,24 @@ fn main() {
         (7, ("65", 12.8)),
     ]);
 
-    if let Some((format_name, frames_per_foot)) = formats.get(&args.format) {
+    //let format_number = &args.format;
+    println!("Frames - {}", args.run_time * (args.fps * 60.0));
+
+    match formats.get(&args.format) {
+        Some((_ ,frames_per_foot)) => {
+            println!(
+                "The length needed for the project is {}",
+                calc_length(args.run_time, args.fps, *frames_per_foot)
+            )
+        }
+        None => {
+            println!(
+                "Wrong format!"
+            )
+        }
+    };
+
+    /*if let Some((format_name, frames_per_foot)) = formats.get(&args.format) {
         println!(
             "Selected format: {} and its frames per foot is {}",
             format_name, frames_per_foot
@@ -39,14 +61,11 @@ fn main() {
     } else {
         println!("Invalid format number {}", args.format);
     }
-    /* function to calculate the length of film needed
-    let mut frames_per_foot: f64 = [selectedFormat].frames_per_foot;
-            float length = (run_time * ((fps * 60) / frames_per_foot));
-            length = ceil(length); // Round up to the next whole number
     */
-    fn calc_length(run_time: f64, fps: f64, frames_per_foot: f64) -> f64 {
+        fn calc_length(run_time: f64, fps: f64, frames_per_foot: f64) -> f64 {
         let total_frames = run_time * (fps * 60.0);
         let length = total_frames / frames_per_foot;
-        length.ceil()
+        //length.ceil()
+        length
     }
 }
